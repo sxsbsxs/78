@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ハラハラ</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui}
+body{max-width:1080px;margin:32px auto;padding:0 18px;background:#111317;color:#e2e2e2}
+header{margin-bottom:34px;padding-bottom:15px;border-bottom:1px solid #2c3038}
+h1{font-size:27px}
+.video-card{background:#1b1f26;border-radius:12px;padding:22px;margin-bottom:24px}
+h3{font-size:22px;margin-bottom:10px}
+.meta{font-size:13px;color:#b0b9c7;line-height:1.8;margin-bottom:14px}
+.note{color:#949fb3;font-size:12px}
+video{width:100%;border-radius:8px;background:#000}
+.dl-btn{display:inline-block;margin-top:16px;padding:10px 20px;background:#3668d8;color:#fff;border-radius:7px;text-decoration:none}
+.tag{display:inline-block;background:#272c36;padding:4px 9px;border-radius:4px;font-size:12px;margin:3px 4px;color:#d1d9e8}
+</style>
+</head>
+<body>
+<header>
+<h1>ハラハラ</h1>
+</header>
+<div id="container"></div>
+
+<script>
+fetch("./videos.json")
+.then(res=>res.json())
+.then(list=>{
+  const box=document.getElementById("container");
+  list.forEach(item=>{
+    const div=document.createElement("div");
+    div.className="video-card";
+    const tagHtml=item.tags.split(',').map(t=>`<span class="tag">${t}</span>`).join(' ');
+    div.innerHTML=`
+      <h3>${item.title}</h3>
+      <div class="meta">
+        動画ID：${item.nicoid} <span class="note">（视频编号）</span><br>
+        投稿者：${item.author} <span class="note">（投稿用户，等级20）</span><br>
+        投稿時間：${item.originalDate} <span class="note">（niconico投稿日期；到采集当日已过去6127天）</span><br>
+        再生時間：${item.length} <span class="note">（播放时长）</span><br>
+        はてなブックマーク：9 users（2015‑06‑03 14:06:31） <span class="note">（Hatena书签收藏数9）</span><br>
+        状態：${item.status} <span class="note">（原站已经删除、无法公开访问）</span><br>
+        登録タグ：${tagHtml}
+      </div>
+      <video controls preload="none">
+        <source src="${item.url}" type="video/mp4">
+      </video>
+      <br>
+      <a class="dl-btn" href="${item.url}" download="${item.filename}">📥 ダウンロード</a>
+    `;
+    box.appendChild(div);
+  })
+})
+</script>
+</body>
+</html>
